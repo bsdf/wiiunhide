@@ -1,0 +1,58 @@
+#+title:wiiunhide
+
+this is yet another application allows you to get rid of the annoying =Format
+Disk= nag when using a FAT32 USB harddrive on the wiiu. this is achieved by
+modifying a byte in the drive's MBR so that it appears to be hidden. because
+modifying a drive's MBR is a potentially risky operation, *THIS APPLICATION IS
+USED AT YOUR OWN RISK.* make sure you have a full backup of your drive before
+use.
+
+this application was tested on Debian unstable and no others. in theory it
+should work on any unix-like where rust is supported. i doubt it will work on
+windows.
+
+* INSTALLATION
+** FROM CARGO
+with a proper Rust installation, the application can easily be installed with
+cargo:
+
+#+begin_src shell
+  cargo install wiiunhide
+#+end_src
+** FROM BINARY
+a binary has been provided for Linux x86_64 in the Releases tab. place this in
+your =$PATH= and you're good to go.
+* USAGE
+execute the application with the block device of your harddrive (=/dev/sde=, NOT
+=/dev/sde1=) to toggle the status:
+
+#+begin_src shell
+$ wiiunhide /dev/sde
+#+end_src
+
+be sure you have proper read/write access to this device before running. this
+can be achieved with =sudo= or setting up a udev rule for the device.
+
+** CHECK
+running the application with the =-c= or =--check= flag will simply print the
+current status of the device without making any modifications:
+
+#+begin_src shell
+$ wiiunhide --check /dev/sde
+wiiunhide 0.1
+/dev/sde is currently VISIBLE
+#+end_src
+
+** BACKUP AND RESTORE
+a backup of the drive's MBR (the first 512 bytes) is automatically created
+before any modifications are made. by default, it is saved as =mbr.bin= but can
+be customized with the =--backup-file [filename]= option.
+
+the =--restore [filename]= command attempts to restore the drive's MBR from a
+=wiiunhide= backup file. this is a risky operation and should only be used as a
+last resort. again, *USE AT YOUR OWN RISK.*
+
+* REFERENCES
+- [[https://gbatemp.net/threads/wii-u-format-disk-message-workaround-linux-edition.374398/][wudh]] - a shell script to interactively hide/unhide a disk. =wiiunhide= was
+  built by readings its source.
+- [[https://code.google.com/archive/p/u-stealth/][u-stealth]] - the originator of this method.
